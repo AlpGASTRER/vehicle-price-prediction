@@ -1,11 +1,7 @@
-# 📦 Streamlit App Starter Kit 
-```
-⬆️ (Replace above with your app's name)
-```
+# 📦 Price prediction  
 
-Description of the app ...
+Final Project for Epsilon AI institution
 
-## Demo App
 
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://app-starter-kit.streamlit.app/)
 
@@ -15,11 +11,11 @@ Description of the app ...
 
 ## Section Heading
 
-This is filler text, please replace this with text for this section.
+This is filler text for now.
 
 ## Further Reading
 
-This is filler text, please replace this with a explanatory text about further relevant resources for this repo
-- Resource 1
-- Resource 2
+This is filler text for now
+- [![Data set from kaggle](https://www.kaggle.com/datasets/syedanwarafridi/vehicle-sales-data/data)
+- [![Streamlit](https://share.streamlit.io/)
 - Resource 3
