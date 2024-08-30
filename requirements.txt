@@ -4,4 +4,6 @@ numpy
 xgboost
 lightgbm
 matplotlib
+plotly
 sikit-learn
+seaborn
