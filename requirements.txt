@@ -2,6 +2,7 @@ lightgbm
 matplotlib
 numpy
 pandas
+pillow
 plotly
 scikit-learn
 seaborn

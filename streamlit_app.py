@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import numpy as np
 from PIL import Image
+import json
 
 # Set page config for dark mode
 st.set_page_config(page_title="Car Price Prediction", layout="wide", initial_sidebar_state="expanded", page_icon="🚗")
@@ -17,17 +18,25 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Load the data, model, and column names
-@st.cache_data
-def load_data():
-    df = pd.read_csv('final_df.csv')
+# Load the model, columns, and feature data
+@st.cache_resource
+def load_model_and_columns():
     with open('model.pkl', 'rb') as file:
         model = pickle.load(file)
     with open('input_columns.pkl', 'rb') as file:
         columns = pickle.load(file)
-    return df, model, columns
+    return model, columns
 
-df, model, columns = load_data()
+@st.cache_data
+def load_feature_data():
+    # Load pre-processed feature data from a JSON file
+    with open('feature_data.json', 'r') as file:
+        feature_data = json.load(file)
+    return feature_data
+
+# Load the model, columns, and feature data
+model, columns = load_model_and_columns()
+feature_data = load_feature_data()
 
 # Load the image
 image = Image.open("feixaio.png")
@@ -41,7 +50,7 @@ features = {
     'body': 'Main structure of the vehicle that sits on the frame',
     'transmission': 'Gearbox',
     'state': 'Where the car is registered',
-    'condition': 'Vehicle condition (1-49)',
+    'condition': 'Vehicle condition (1-49) Higher is better',
     'odometer': 'Total distance traveled',
     'color': 'Exterior paintwork of the car',
     'interior': 'Design and materials used inside the car cabin',
@@ -61,19 +70,19 @@ for feature, description in features.items():
     if feature == 'year':
         user_input[feature] = st.number_input(f"Enter {description}", min_value=1900, max_value=2024, step=1, value=2024)
     elif feature == 'make':
-        user_input[feature] = st.selectbox(f"Select {description}", sorted(df[feature].unique()))
+        user_input[feature] = st.selectbox(f"Select {description}", feature_data[feature])
     elif feature == 'model':
-        models = df[df['make'] == user_input['make']][feature].unique()
-        user_input[feature] = st.selectbox(f"Select {description}", sorted(models))
+        models = feature_data['model_by_make'].get(user_input['make'], [])
+        user_input[feature] = st.selectbox(f"Select {description}", models)
     elif feature == 'trim':
-        trims = df[(df['make'] == user_input['make']) & (df['model'] == user_input['model'])][feature].unique()
-        user_input[feature] = st.selectbox(f"Select {description}", sorted(trims))
+        trims = feature_data['trim_by_make_model'].get(f"{user_input['make']}_{user_input['model']}", [])
+        user_input[feature] = st.selectbox(f"Select {description}", trims)
     elif feature == 'odometer':
         user_input[feature] = st.number_input(f"Enter {description}", min_value=0, max_value=1000000, step=1000)
     elif feature == 'condition':
         user_input[feature] = st.slider(f"Select {description}", min_value=1, max_value=49, value=25)
     else:
-        user_input[feature] = st.selectbox(f"Select {description}", sorted(df[feature].unique()))
+        user_input[feature] = st.selectbox(f"Select {description}", feature_data[feature])
     
     st.write(f"Disclaimer: This {feature} information is used to estimate the car's price and may affect the prediction.")
 
