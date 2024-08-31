@@ -117,8 +117,9 @@ if st.button('Predict Car Price'):
         # Display error information
         mse = 25919577.497542154 
         rmse = np.sqrt(mse)
-        st.info(f'Note: The prediction has a root mean square error of ${rmse:,.2f}. '
-                f'This means the actual price could be roughly ${rmse:,.2f} higher or lower than the prediction.')
+        st.info(f'Note: The prediction has a root mean square error of ${rmse:,.2f}.')
+        
+        st.info(f'This means the actual price could be roughly ${rmse:,.2f} higher or lower than the prediction.')
     except Exception as e:
         st.error(f"An error occurred during prediction: {str(e)}")
         st.error("Please check your input values and try again.")
