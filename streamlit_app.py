@@ -20,10 +20,10 @@ st.markdown("""
 # Load the data, model, and column names
 @st.cache_data
 def load_data():
-    df = pd.read_csv('your_data.csv')
+    df = pd.read_csv('final_df.csv')
     with open('model.pkl', 'rb') as file:
         model = pickle.load(file)
-    with open('columns.pkl', 'rb') as file:
+    with open('input_columns.pkl', 'rb') as file:
         columns = pickle.load(file)
     return df, model, columns
 
