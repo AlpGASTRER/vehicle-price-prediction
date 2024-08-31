@@ -46,8 +46,8 @@ features = {
     'odometer': {'description': 'Total distance traveled', 'type': 'numeric'},
     'color': {'description': 'Exterior paintwork of the car', 'type': 'categorical'},
     'interior': {'description': 'Design and materials used inside the car cabin', 'type': 'categorical'},
-    'seller': {'description': 'Who sold the vehicle', 'type': 'categorical'},
-    'season': {'description': 'Season of the year', 'type': 'categorical'}
+    'seller': {'description': 'Who is selling the vehicle', 'type': 'categorical'},
+    'season': {'description': 'In which season you are buying the vehicle', 'type': 'categorical'}
 }
 # Create the Streamlit app
 st.title('Car Price Prediction App')
