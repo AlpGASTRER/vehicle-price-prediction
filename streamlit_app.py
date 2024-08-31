@@ -51,6 +51,16 @@ features = {
 # Create the Streamlit app
 st.title('Car Price Prediction App')
 
+# Verify columns match features
+column_set = set(columns)
+feature_set = set(features.keys())
+
+if column_set != feature_set:
+    st.error("Mismatch between columns and features!")
+    st.write("Columns not in features:", column_set - feature_set)
+    st.write("Features not in columns:", feature_set - column_set)
+    st.stop()
+
 # Create input fields for each feature
 user_input = {}
 
