@@ -5,18 +5,8 @@ import numpy as np
 from PIL import Image
 import json
 
-# Set page config for dark mode
+# Set page config
 st.set_page_config(page_title="Car Price Prediction", layout="wide", initial_sidebar_state="expanded", page_icon="🚗")
-
-# Apply dark theme
-#st.markdown("""
-#<style>
-#    .stApp {
-#        background-color: #2b2b2b;
-#        color: #ffffff;
-#    }
-#</style>
-#""", unsafe_allow_html=True)
 
 # Load the model, columns, and feature data
 @st.cache_resource
@@ -39,7 +29,7 @@ model, columns = load_model_and_columns()
 feature_data = load_feature_data()
 
 # Load the image
-image = Image.open("feixaio.png")
+image = Image.open("feixiao.png")
 
 # Define the features with descriptions
 features = {
@@ -50,7 +40,7 @@ features = {
     'body': 'Main structure of the vehicle that sits on the frame',
     'transmission': 'Gearbox',
     'state': 'Where the car is registered',
-    'condition': 'Vehicle condition (1-49) Higher is better',
+    'condition': 'Vehicle condition (1-49) higher is better',
     'odometer': 'Total distance traveled',
     'color': 'Exterior paintwork of the car',
     'interior': 'Design and materials used inside the car cabin',
@@ -65,26 +55,22 @@ st.title('Car Price Prediction App')
 user_input = {}
 
 for feature, description in features.items():
-    st.subheader(f"{feature.capitalize()} - {description}")
-    
     if feature == 'year':
-        user_input[feature] = st.number_input(f"Enter {description}", min_value=1900, max_value=2024, step=1, value=2024)
+        user_input[feature] = st.number_input(f"{feature.capitalize()} - {description}", min_value=1900, max_value=2024, step=1, value=2024)
     elif feature == 'make':
-        user_input[feature] = st.selectbox(f"Select {description}", feature_data[feature])
+        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", feature_data[feature])
     elif feature == 'model':
         models = feature_data['model_by_make'].get(user_input['make'], [])
-        user_input[feature] = st.selectbox(f"Select {description}", models)
+        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", models)
     elif feature == 'trim':
         trims = feature_data['trim_by_make_model'].get(f"{user_input['make']}_{user_input['model']}", [])
-        user_input[feature] = st.selectbox(f"Select {description}", trims)
+        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", trims)
     elif feature == 'odometer':
-        user_input[feature] = st.number_input(f"Enter {description}", min_value=0, max_value=1000000, step=1000)
+        user_input[feature] = st.number_input(f"{feature.capitalize()} - {description}", min_value=0, max_value=1000000, step=1000)
     elif feature == 'condition':
-        user_input[feature] = st.slider(f"Select {description}", min_value=1, max_value=49, value=25)
+        user_input[feature] = st.slider(f"{feature.capitalize()} - {description}", min_value=1, max_value=49, value=25)
     else:
-        user_input[feature] = st.selectbox(f"Select {description}", feature_data[feature])
-    
-    st.write(f"*"*50)
+        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", feature_data[feature])
 
 # Create a button to make predictions
 if st.button('Predict Car Price'):
@@ -108,11 +94,11 @@ if st.button('Predict Car Price'):
     # Display the image
     st.image(image, caption='Hooray! Prediction complete.', use_column_width=True)
     
-    # Display error information 
+    # Display error information
     mse = 25919577.497542154  
     rmse = np.sqrt(mse)
     st.info(f'Note: The prediction has a root mean square error of ${rmse:,.2f}. '
             f'This means the actual price could be roughly ${rmse:,.2f} higher or lower than the prediction.')
 
 # Add some information about the app
-st.info('This is made for Epsilon AI final project.')
+st.info("This project is made for Epsilon AI's final project.")
