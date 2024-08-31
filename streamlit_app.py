@@ -72,7 +72,7 @@ for feature, info in features.items():
         elif feature == 'condition':
             user_input[feature] = st.slider(f"{feature.capitalize()} - {info['description']}", min_value=1, max_value=49, value=25)
         else:
-            user_input[feature] = st.number_input(f"{feature.capitalize()} - {info['description']}", min_value=0)
+            user_input[feature] = st.number_input(f"{feature.capitalize()} - {info['description']}", min_value=0, step=1000)
     else:  # categorical
         if feature == 'make':
             user_input[feature] = st.selectbox(f"{feature.capitalize()} - {info['description']}", feature_data[feature])
