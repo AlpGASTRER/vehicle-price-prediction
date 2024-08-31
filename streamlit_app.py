@@ -9,6 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 # Set page config
 st.set_page_config(page_title="Car Price Prediction", layout="wide", initial_sidebar_state="expanded", page_icon="🚗")
 
+
 # Load the model, columns, and feature data
 @st.cache_resource
 def load_model_and_columns():
@@ -127,3 +128,11 @@ if st.button('Predict Car Price'):
 
 # Add some information about the app
 st.info("This project is made for Epsilon AI's final project.")
+
+#redirect to github source code
+st.markdown(
+    """
+    [View the source code on GitHub](https://github.com/AlpGASTRER/vehicle-price-prediction/tree/master)
+    """,
+    unsafe_allow_html=True
+)
