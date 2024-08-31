@@ -4,6 +4,7 @@ import pickle
 import numpy as np
 from PIL import Image
 import json
+from sklearn.preprocessing import LabelEncoder
 
 # Set page config
 st.set_page_config(page_title="Car Price Prediction", layout="wide", initial_sidebar_state="expanded", page_icon="🚗")
@@ -31,23 +32,22 @@ feature_data = load_feature_data()
 # Load the image
 image = Image.open("feixiao.png")
 
-# Define the features with descriptions
+# Define the features with descriptions and types
 features = {
-    'year': 'Year of manufacture',
-    'make': 'Manufacturer',
-    'model': "Car's model",
-    'trim': 'Levels of features and equipment',
-    'body': 'Main structure of the vehicle that sits on the frame',
-    'transmission': 'Gearbox',
-    'state': 'Where the car is registered',
-    'condition': 'Vehicle condition (1-49) higher is better',
-    'odometer': 'Total distance traveled',
-    'color': 'Exterior paintwork of the car',
-    'interior': 'Design and materials used inside the car cabin',
-    'seller': 'Who is selling the vehicle',
-    'season': 'Season of the year'
+    'year': {'description': 'Year of manufacture', 'type': 'numeric'},
+    'make': {'description': 'Manufacturer', 'type': 'categorical'},
+    'model': {'description': "Car's model", 'type': 'categorical'},
+    'trim': {'description': 'Levels of features and equipment', 'type': 'categorical'},
+    'body': {'description': 'Main structure of the vehicle that sits on the frame', 'type': 'categorical'},
+    'transmission': {'description': 'Gearbox', 'type': 'categorical'},
+    'state': {'description': 'Where the car is registered', 'type': 'categorical'},
+    'condition': {'description': 'Vehicle condition (1-49) the higher the better', 'type': 'numeric'},
+    'odometer': {'description': 'Total distance traveled', 'type': 'numeric'},
+    'color': {'description': 'Exterior paintwork of the car', 'type': 'categorical'},
+    'interior': {'description': 'Design and materials used inside the car cabin', 'type': 'categorical'},
+    'seller': {'description': 'Who sold the vehicle', 'type': 'categorical'},
+    'season': {'description': 'Season of the year', 'type': 'categorical'}
 }
-
 # Create the Streamlit app
 st.title('Car Price Prediction App')
 
@@ -64,23 +64,26 @@ if column_set != feature_set:
 # Create input fields for each feature
 user_input = {}
 
-for feature, description in features.items():
-    if feature == 'year':
-        user_input[feature] = st.number_input(f"{feature.capitalize()} - {description}", min_value=1900, max_value=2024, step=1, value=2024)
-    elif feature == 'make':
-        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", feature_data[feature])
-    elif feature == 'model':
-        models = feature_data['model_by_make'].get(user_input['make'], [])
-        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", models)
-    elif feature == 'trim':
-        trims = feature_data['trim_by_make_model'].get(f"{user_input['make']}_{user_input['model']}", [])
-        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", trims)
-    elif feature == 'odometer':
-        user_input[feature] = st.number_input(f"{feature.capitalize()} - {description}", min_value=0, max_value=10000000, step=1)
-    elif feature == 'condition':
-        user_input[feature] = st.slider(f"{feature.capitalize()} - {description}", min_value=1, max_value=49, value=25)
-    else:
-        user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", feature_data[feature])
+for feature, info in features.items():
+    if info['type'] == 'numeric':
+        if feature == 'year':
+            user_input[feature] = st.number_input(f"{feature.capitalize()} - {info['description']}", min_value=1900, max_value=2024, value=2024)
+        elif feature == 'condition':
+            user_input[feature] = st.slider(f"{feature.capitalize()} - {info['description']}", min_value=1, max_value=49, value=25)
+        else:
+            user_input[feature] = st.number_input(f"{feature.capitalize()} - {info['description']}", min_value=0)
+    else:  # categorical
+        if feature == 'make':
+            user_input[feature] = st.selectbox(f"{feature.capitalize()} - {info['description']}", feature_data[feature])
+        elif feature == 'model':
+            models = feature_data['model_by_make'].get(user_input['make'], [])
+            user_input[feature] = st.selectbox(f"{feature.capitalize()} - {info['description']}", models)
+        elif feature == 'trim':
+            trims = feature_data['trim_by_make_model'].get(f"{user_input['make']}_{user_input['model']}", [])
+            user_input[feature] = st.selectbox(f"{feature.capitalize()} - {info['description']}", trims)
+        else:
+            user_input[feature] = st.selectbox(f"{feature.capitalize()} - {info['description']}", feature_data[feature])
+
 
 # Create a button to make predictions
 if st.button('Predict Car Price'):
@@ -88,11 +91,17 @@ if st.button('Predict Car Price'):
         # Prepare the input data
         input_data = pd.DataFrame([user_input])
         
+        # Encode categorical variables
+        le = LabelEncoder()
+        for column in input_data.columns:
+            if features[column]['type'] == 'categorical':
+                input_data[column] = le.fit_transform(input_data[column])
+        
         # Ensure the input data has all the columns the model expects
         for col in columns:
             if col not in input_data.columns:
                 input_data[col] = 0
-        
+                
         # Reorder the columns to match the model's expected input
         input_data = input_data[columns]
         
