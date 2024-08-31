@@ -44,7 +44,7 @@ features = {
     'odometer': 'Total distance traveled',
     'color': 'Exterior paintwork of the car',
     'interior': 'Design and materials used inside the car cabin',
-    'seller': 'Who sold the vehicle',
+    'seller': 'Who is selling the vehicle',
     'season': 'Season of the year'
 }
 
