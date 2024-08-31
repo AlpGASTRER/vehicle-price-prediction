@@ -9,14 +9,14 @@ import json
 st.set_page_config(page_title="Car Price Prediction", layout="wide", initial_sidebar_state="expanded", page_icon="🚗")
 
 # Apply dark theme
-st.markdown("""
-<style>
-    .stApp {
-        background-color: #2b2b2b;
-        color: #ffffff;
-    }
-</style>
-""", unsafe_allow_html=True)
+#st.markdown("""
+#<style>
+#    .stApp {
+#        background-color: #2b2b2b;
+#        color: #ffffff;
+#    }
+#</style>
+#""", unsafe_allow_html=True)
 
 # Load the model, columns, and feature data
 @st.cache_resource
@@ -84,7 +84,7 @@ for feature, description in features.items():
     else:
         user_input[feature] = st.selectbox(f"Select {description}", feature_data[feature])
     
-    st.write(f"Disclaimer: This {feature} information is used to estimate the car's price and may affect the prediction.")
+    st.write(f"*"*50)
 
 # Create a button to make predictions
 if st.button('Predict Car Price'):
@@ -115,4 +115,4 @@ if st.button('Predict Car Price'):
             f'This means the actual price could be roughly ${rmse:,.2f} higher or lower than the prediction.')
 
 # Add some information about the app
-st.info('This app predicts the price of a car based on various features. Fill in the details above and click "Predict Car Price" to get an estimate.')
+st.info('This is made for Epsilon AI final project.')
