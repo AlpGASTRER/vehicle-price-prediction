@@ -112,7 +112,7 @@ if st.button('Predict Car Price'):
         st.success(f'The predicted price of the car is ${prediction[0]:,.2f}')
         
         # Display the image
-        st.image(image, caption='Hooray! Prediction complete.', use_column_width=True)
+        st.image(image, caption='Hooray! Prediction complete.', width=300)
         
         # Display error information
         mse = 25919577.497542154 
