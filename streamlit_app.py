@@ -66,7 +66,7 @@ for feature, description in features.items():
         trims = feature_data['trim_by_make_model'].get(f"{user_input['make']}_{user_input['model']}", [])
         user_input[feature] = st.selectbox(f"{feature.capitalize()} - {description}", trims)
     elif feature == 'odometer':
-        user_input[feature] = st.number_input(f"{feature.capitalize()} - {description}", min_value=0, max_value=1000000, step=1000)
+        user_input[feature] = st.number_input(f"{feature.capitalize()} - {description}", min_value=0, max_value=10000000, step=1)
     elif feature == 'condition':
         user_input[feature] = st.slider(f"{feature.capitalize()} - {description}", min_value=1, max_value=49, value=25)
     else:
@@ -74,31 +74,36 @@ for feature, description in features.items():
 
 # Create a button to make predictions
 if st.button('Predict Car Price'):
-    # Prepare the input data
-    input_data = pd.DataFrame([user_input])
-    
-    # Ensure the input data has all the columns the model expects
-    for col in columns:
-        if col not in input_data.columns:
-            input_data[col] = 0
-    
-    # Reorder the columns to match the model's expected input
-    input_data = input_data[columns]
-    
-    # Make the prediction
-    prediction = model.predict(input_data)
-    
-    # Display the prediction
-    st.success(f'The predicted price of the car is ${prediction[0]:,.2f}')
-    
-    # Display the image
-    st.image(image, caption='Hooray! Prediction complete.', use_column_width=True)
-    
-    # Display error information
-    mse = 25919577.497542154  
-    rmse = np.sqrt(mse)
-    st.info(f'Note: The prediction has a root mean square error of ${rmse:,.2f}. '
-            f'This means the actual price could be roughly ${rmse:,.2f} higher or lower than the prediction.')
+    try:
+        # Prepare the input data
+        input_data = pd.DataFrame([user_input])
+        
+        # Ensure the input data has all the columns the model expects
+        for col in columns:
+            if col not in input_data.columns:
+                input_data[col] = 0
+        
+        # Reorder the columns to match the model's expected input
+        input_data = input_data[columns]
+        
+        # Make the prediction
+        prediction = model.predict(input_data)
+        
+        # Display the prediction
+        st.success(f'The predicted price of the car is ${prediction[0]:,.2f}')
+        
+        # Display the image
+        st.image(image, caption='Hooray! Prediction complete.', use_column_width=True)
+        
+        # Display error information
+        mse = 25919577.497542154 
+        rmse = np.sqrt(mse)
+        st.info(f'Note: The prediction has a root mean square error of ${rmse:,.2f}. '
+                f'This means the actual price could be roughly ${rmse:,.2f} higher or lower than the prediction.')
+    except Exception as e:
+        st.error(f"An error occurred during prediction: {str(e)}")
+        st.error("Please check your input values and try again.")
+        st.error("If the problem persists, there might be an issue with the model or input data format.")
 
 # Add some information about the app
 st.info("This project is made for Epsilon AI's final project.")
